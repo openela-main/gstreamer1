@@ -16,8 +16,8 @@
 %endif
 
 Name:           gstreamer1
-Version:        1.18.4
-Release:        4%{?gitcommit:.git%{shortcommit}}%{?dist}
+Version:        1.22.1
+Release:        2%{?gitcommit:.git%{shortcommit}}%{?dist}
 Summary:        GStreamer streaming media framework runtime
 
 License:        LGPLv2+
@@ -93,7 +93,6 @@ GStreamer streaming media framework.
 %meson	\
   -D package-name='Fedora GStreamer package' \
   -D package-origin='http://download.fedoraproject.org' \
-  -D gtk_doc=disabled \
   -D tests=disabled -D examples=disabled \
   -D ptp-helper-permissions=capabilities \
   %{!?with_unwind:-D libunwind=disabled -D libdw=disabled } \
@@ -114,7 +113,7 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 %files -f gstreamer-%{majorminor}.lang
 %license COPYING
-%doc AUTHORS NEWS README RELEASE
+%doc AUTHORS NEWS README.md README.static-linking RELEASE
 %{_libdir}/libgstreamer-%{majorminor}.so.*
 %{_libdir}/libgstbase-%{majorminor}.so.*
 %{_libdir}/libgstcheck-%{majorminor}.so.*
@@ -196,6 +195,12 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 
 %changelog
+* Wed Apr 12 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.1-2
+- Bump for rebuild
+
+* Tue Mar 21 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.1-1
+- Update to 1.22.1
+
 * Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 1.18.4-4
 - Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
   Related: rhbz#1991688
