@@ -2,7 +2,7 @@
 
 #global gitrel     140
 #global gitcommit  a70055b58568f7304ba46bd8742232337013487b
-#global shortcommit %(c=%{gitcommit}; echo ${c:0:5})
+#global shortcommit %%(c=%%{gitcommit}; echo ${c:0:5})
 
 %global         _glib2                  2.32.0
 %global         _libxml2                2.4.0
@@ -16,11 +16,11 @@
 %endif
 
 Name:           gstreamer1
-Version:        1.22.1
-Release:        2%{?gitcommit:.git%{shortcommit}}%{?dist}
+Version:        1.22.12
+Release:        3%{?dist}
 Summary:        GStreamer streaming media framework runtime
 
-License:        LGPLv2+
+License:        LGPL-2.1-or-later
 URL:            http://gstreamer.freedesktop.org/
 %if 0%{?gitrel}
 # git clone git://anongit.freedesktop.org/gstreamer/gstreamer
@@ -87,7 +87,7 @@ GStreamer streaming media framework.
 
 %prep
 %setup -q -n gstreamer-%{version}
-%patch0 -p1 -b .rpm-provides
+%patch -P 0 -p3 -b .rpm-provides
 
 %build
 %meson	\
@@ -120,7 +120,12 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 %{_libdir}/libgstcontroller-%{majorminor}.so.*
 %{_libdir}/libgstnet-%{majorminor}.so.*
 
-%{_libexecdir}/gstreamer-%{majorminor}/
+%dir %{_libexecdir}/gstreamer-%{majorminor}/
+%{_libexecdir}/gstreamer-%{majorminor}/gst-completion-helper
+%{_libexecdir}/gstreamer-%{majorminor}/gst-hotdoc-plugins-scanner
+%{_libexecdir}/gstreamer-%{majorminor}/gst-plugins-doc-cache-generator
+%{_libexecdir}/gstreamer-%{majorminor}/gst-plugin-scanner
+%attr(755,root,root) %caps(cap_net_bind_service,cap_net_admin,cap_sys_nice=ep) %{_libexecdir}/gstreamer-%{majorminor}/gst-ptp-helper
 
 %dir %{_libdir}/gstreamer-%{majorminor}
 %{_libdir}/gstreamer-%{majorminor}/libgstcoreelements.so
@@ -176,7 +181,7 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 %{_datadir}/aclocal/gst-element-check-%{majorminor}.m4
 
-%dir %{_datadir}/gstreamer-%{majorminor}/gdb/
+%dir %{_datadir}/gstreamer-%{majorminor}/gdb
 %{_datadir}/gstreamer-%{majorminor}/gdb/
 %{_datadir}/gdb/auto-load/
 
@@ -195,18 +200,101 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 
 %changelog
-* Wed Apr 12 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.1-2
-- Bump for rebuild
+* Sat Nov 09 2024 Wim Taymans <wtaymans@redhat.com> - 1.22.12-3
+- Rebuild
+- Resolves: RHEL-38511, RHEL-41157
 
-* Tue Mar 21 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.1-1
+* Fri Nov 08 2024 Wim Taymans <wtaymans@redhat.com> - 1.22.12-2
+- Rebuild
+- Resolves: RHEL-38511, RHEL-41157
+
+* Fri Jun 14 2024 Wim Taymans <wtaymans@redhat.com> - 1.22.12-1
+- Update to 1.22.12
+
+* Thu Jan 25 2024 Gwyn Ciesla <gwync@protonmail.com> - 1.22.9-1
+- 1.22.9
+
+* Wed Jan 24 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.22.8-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sat Jan 20 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.22.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Dec 18 2023 Gwyn Ciesla <gwync@protonmail.com> - 1.22.8-1
+- 1.22.8
+
+* Mon Nov 20 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.7-2
+- Set cap information correctly
+- Resolves: rhbz#2238703
+
+* Mon Nov 13 2023 Gwyn Ciesla <gwync@protonmail.com> - 1.22.7-1
+- 1.22.7
+
+* Wed Sep 20 2023 Gwyn Ciesla <gwync@protonmail.com> - 1.22.6-1
+- 1.22.6
+
+* Fri Jul 21 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.5-1
+- Update to 1.22.5
+
+* Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.22.4-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Tue Jun 20 2023 Gwyn Ciesla <gwync@protonmail.com> - 1.22.4-1
+- 1.22.4
+
+* Thu Jun 8 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.3-2
+- Do setcap on gst-ptp-helper to give the right permissions.
+
+* Thu May 25 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.3-1
+- Update to 1.22.3
+
+* Thu Apr 13 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.2-1
+- Update to 1.22.2
+
+* Mon Mar 13 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.1-1
 - Update to 1.22.1
 
-* Mon Aug 09 2021 Mohan Boddu <mboddu@redhat.com> - 1.18.4-4
-- Rebuilt for IMA sigs, glibc 2.34, aarch64 flags
-  Related: rhbz#1991688
+* Tue Jan 24 2023 Wim Taymans <wtaymans@redhat.com> - 1.22.0-1
+- Update to 1.22.0
 
-* Fri Apr 16 2021 Mohan Boddu <mboddu@redhat.com> - 1.18.4-3
-- Rebuilt for RHEL 9 BETA on Apr 15th 2021. Related: rhbz#1947937
+* Fri Jan 20 2023 Wim Taymans <wtaymans@redhat.com> - 1.21.90-1
+- Update to 1.21.90
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.20.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Wed Jan 11 2023 Wim Taymans <wtaymans@redhat.com> - 1.20.5-1
+- Update to 1.20.5
+
+* Thu Oct 13 2022 Wim Taymans <wtaymans@redhat.com> - 1.20.4-1
+- Update to 1.20.4
+
+* Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.20.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Mon Jul 18 2022 Wim Taymans <wtaymans@redhat.com> - 1.20.3-1
+- Update to 1.20.3
+
+* Fri Feb 4 2022 Wim Taymans <wtaymans@redhat.com> - 1.20.0-1
+- Update to 1.20.0
+
+* Wed Jan 26 2022 Wim Taymans <wtaymans@redhat.com> - 1.19.3-3
+- Fix build, gtk_doc does not exist anymore.
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.19.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Nov 11 2021 Wim Taymans <wtaymans@redhat.com> - 1.19.3-1
+- Update to 1.19.3
+
+* Thu Sep 23 2021 Wim Taymans <wtaymans@redhat.com> - 1.19.2-1
+- Update to 1.19.2
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.19.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Thu Jun 03 2021 Wim Taymans <wtaymans@redhat.com> - 1.19.1-1
+- Update to 1.19.1
 
 * Tue Apr 6 2021 Wim Taymans <wtaymans@redhat.com> - 1.18.4-2
 - Fix build options to disable libunwind and libdw
