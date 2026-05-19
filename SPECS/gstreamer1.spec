@@ -16,8 +16,8 @@
 %endif
 
 Name:           gstreamer1
-Version:        1.24.11
-Release:        1%{?dist}
+Version:        1.26.7
+Release:        5%{?dist}
 Summary:        GStreamer streaming media framework runtime
 
 License:        LGPL-2.1-or-later
@@ -36,6 +36,7 @@ Source2:        gstreamer1.attr
 
 BuildRequires:  meson >= 0.48.0
 BuildRequires:  gcc
+BuildRequires:  libatomic
 BuildRequires:  glib2-devel >= %{_glib2}
 BuildRequires:  libxml2-devel >= %{_libxml2}
 BuildRequires:  gobject-introspection-devel >= %{_gobject_introspection}
@@ -197,6 +198,8 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 %{_libdir}/pkgconfig/gstreamer-check-%{majorminor}.pc
 %{_libdir}/pkgconfig/gstreamer-net-%{majorminor}.pc
 
+%{_datadir}/cmake/FindGStreamer.cmake
+
 %if 0
 %files devel-docs
 %doc %{_datadir}/gtk-doc/html/gstreamer-%{majorminor}
@@ -206,6 +209,18 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 
 %changelog
+* Mon Nov 03 2025 Wim Taymans <wtaymans@redhat.com> - 1.26.7-5
+- 1.26.7
+  Resolves: RHEL-126057
+
+* Tue Jun 17 2025 Wim Taymans <wtaymans@redhat.com> - 1.26.2-1
+- 1.26.2
+  Resolves: DESKTOP-1858
+
+* Wed Jan 15 2025 Wim Taymans <wtaymans@redhat.com> - 1.24.11-2
+  Rebuild
+  Resolves: RHEL-73673
+
 * Tue Jan 14 2025 Wim Taymans <wtaymans@redhat.com> - 1.24.11-1
 - 1.24.11
   Resolves: RHEL-73673
