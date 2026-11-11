@@ -10,7 +10,7 @@
 
 Name:           gstreamer1
 Version:        1.16.1
-Release:        2%{?gitcommit:.git%{shortcommit}}%{?dist}
+Release:        3%{?gitcommit:.git%{shortcommit}}%{?dist}
 Summary:        GStreamer streaming media framework runtime
 
 License:        LGPLv2+
@@ -24,6 +24,9 @@ Source0:        http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-%{versi
 %endif
 ## For GStreamer RPM provides
 Patch0:         gstreamer-inspect-rpm-format.patch
+# https://issues.redhat.com/browse/RHEL-304207
+# https://gitlab.freedesktop.org/gstreamer/gstreamer/-/commit/e3212c8a2c1e762182884d98d0c169adea69de13
+Patch1:         gstreamer1-1.16.1-CVE-2026-125704.patch
 Source1:        gstreamer1.prov
 Source2:        gstreamer1.attr
 
@@ -92,6 +95,7 @@ GStreamer streaming media framework.
 %prep
 %setup -q -n gstreamer-%{version}
 %patch0 -p1 -b .rpm-provides
+%patch1 -p1 -b .CVE-2026-125704
 
 %build
 NOCONFIGURE=1 \
@@ -206,6 +210,10 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 
 %changelog
+* Tue Nov 10 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 1.16.1-3
+- CVE-2026-125704 gstreamer1: gstreamer: Use-after-free in GStreamer core buffer value deserialization
+- Resolves: RHEL-304207
+
 * Mon Nov 18 2019 Tomas Pelka <tpelka@redhat.com> - 1.16.1-2
 - Update to 1.16.2 for correctly pick up for side gating
 - Resolves: rhbz#1756299
