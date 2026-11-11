@@ -17,7 +17,7 @@
 
 Name:           gstreamer1
 Version:        1.26.7
-Release:        5%{?dist}
+Release:        5%{?dist}.1
 Summary:        GStreamer streaming media framework runtime
 
 License:        LGPL-2.1-or-later
@@ -31,6 +31,9 @@ Source0:        http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-%{versi
 %endif
 ## For GStreamer RPM provides
 Patch0:         0001-gst-inspect-add-mode-to-output-RPM-requires-format.patch
+# https://issues.redhat.com/browse/RHEL-304198
+# https://gitlab.freedesktop.org/gstreamer/gstreamer/-/commit/e3212c8a2c1e762182884d98d0c169adea69de13
+Patch1:         gstreamer1-1.26.7-CVE-2026-125704.patch
 Source1:        gstreamer1.prov
 Source2:        gstreamer1.attr
 
@@ -94,6 +97,7 @@ GStreamer streaming media framework.
 %prep
 %setup -q -n gstreamer-%{version}
 %patch -P 0 -p3 -b .rpm-provides
+%patch -P 1 -p1
 
 %build
 %meson	\
@@ -209,6 +213,10 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 
 %changelog
+* Tue Nov 10 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 1.26.7-5.1
+- CVE-2026-125704 gstreamer1: gstreamer: Use-after-free in GStreamer core buffer value deserialization
+  Resolves: RHEL-304198
+
 * Mon Nov 03 2025 Wim Taymans <wtaymans@redhat.com> - 1.26.7-5
 - 1.26.7
   Resolves: RHEL-126057
