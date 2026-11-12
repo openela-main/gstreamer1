@@ -17,7 +17,7 @@
 
 Name:           gstreamer1
 Version:        1.22.12
-Release:        3%{?dist}
+Release:        3%{?dist}.1
 Summary:        GStreamer streaming media framework runtime
 
 License:        LGPL-2.1-or-later
@@ -31,6 +31,9 @@ Source0:        http://gstreamer.freedesktop.org/src/gstreamer/gstreamer-%{versi
 %endif
 ## For GStreamer RPM provides
 Patch0:         gstreamer-inspect-rpm-format.patch
+# https://issues.redhat.com/browse/RHEL-304203
+# https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/11583
+Patch1:         gstreamer1-1.22.12-CVE-2026-125704.patch
 Source1:        gstreamer1.prov
 Source2:        gstreamer1.attr
 
@@ -88,6 +91,7 @@ GStreamer streaming media framework.
 %prep
 %setup -q -n gstreamer-%{version}
 %patch -P 0 -p3 -b .rpm-provides
+%patch -P 1 -p3 -b .CVE-2026-125704
 
 %build
 %meson	\
@@ -200,6 +204,10 @@ install -m0644 -D %{SOURCE2} $RPM_BUILD_ROOT%{_rpmconfigdir}/fileattrs/gstreamer
 
 
 %changelog
+* Tue Nov 10 2026 RHEL Packaging Agent <redhat-ymir-agent@redhat.com> - 1.22.12-3.1
+- CVE-2026-125704 gstreamer1: gstreamer: Use-after-free in GStreamer core buffer value deserialization
+- Resolves: RHEL-304203
+
 * Sat Nov 09 2024 Wim Taymans <wtaymans@redhat.com> - 1.22.12-3
 - Rebuild
 - Resolves: RHEL-38511, RHEL-41157
